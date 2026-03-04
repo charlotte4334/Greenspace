@@ -5,8 +5,10 @@ saving images and filtering. '''
 
 from src.api.sampler import sample_locations
 from config.settings import configs
-from src.data.io import save_location_record
+from src.data.io import save_location_record, save_pano_id
+from src.data.to_dataframe import build_locations_dataframe, save_locations_dataframe
 from src.api.streetview import api_streetview_metadata, api_streetview_panorama
+from src.pairing.location_pairs import create_location_pairs
 
 def run_fetch_data(config):
     """
@@ -39,8 +41,11 @@ def run_fetch_data(config):
                 metadata=metadata,
                 cubemap_images=cubemap,
             )
+            save_pano_id(pano_id)
         except Exception as error:
             continue
+
+    
 
 
 
@@ -50,9 +55,12 @@ def run_pipeline():
 
     if mode == "fetching_data":
         run_fetch_data(configs)
+    elif mode == "building_dataframe":
+        dataframe = build_locations_dataframe(locations_root=configs["locations_dir"])
+        save_locations_dataframe(dataframe, output_csv_path=configs["locations_index_csv"])
 
-    elif mode == "filtering":
-        run_filtering(configs)
+    elif mode == "pairing": 
+            create_location_pairs(configs)
 
     else:
         raise ValueError(f"Unknown mode: {mode}")

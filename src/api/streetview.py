@@ -5,7 +5,6 @@ import requests
 from PIL import Image
 
 from config.settings import API_KEY, PANO_IDS_FILE
-from src.data.io import save_pano_id
 
 
 def api_streetview_metadata(lat, lon):
@@ -37,7 +36,6 @@ def api_streetview_metadata(lat, lon):
         if month < 4 or month > 9:
             return None
 
-    save_pano_id(pano_id)
     return data
 
 
