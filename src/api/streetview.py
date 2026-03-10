@@ -23,20 +23,24 @@ def api_streetview_metadata(lat, lon):
     data = response.json()
 
     if data.get("status") != "OK":
-        return None
+        return None, "not found"
 
     pano_id = data.get("pano_id")
     date = data.get("date")
 
+
     if check_duplicate(pano_id):
-        return None
+        status = "duplicate"
+        return None, status
 
     if date and "-" in date:
         month = int(date.split("-")[1])
         if month < 4 or month > 9:
-            return None
+            status = "not summer"
+            return None, status
+    status = "ok"
 
-    return data
+    return data, status
 
 
 def api_streetview_panorama(pano_id, size="640x640", fov=90):

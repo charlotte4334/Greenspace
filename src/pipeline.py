@@ -25,11 +25,18 @@ def run_fetch_data(config):
 
     # ------------ API CALLS ------------------
 
+    no_locations = 0
+    already_found = 0
     for lat, lon in sampled_points:
         try:
-            metadata = api_streetview_metadata(lat, lon)
+            metadata,status = api_streetview_metadata(lat, lon)
 
             if not metadata:
+                if status == "not found" or status == "not summer":
+                    no_locations += 1
+                elif status == "duplicate":
+                    already_found += 1
+
                 continue
 
             pano_id = metadata.get("pano_id")
@@ -45,7 +52,8 @@ def run_fetch_data(config):
         except Exception as error:
             continue
 
-    
+    discovery_rate = (len(sampled_points) - no_locations - already_found) / (len(sampled_points) - no_locations)
+    print(f"Discovery rate: {discovery_rate:.2%}")
 
 
 
@@ -57,7 +65,7 @@ def run_pipeline():
         run_fetch_data(configs)
     elif mode == "building_dataframe":
         dataframe = build_locations_dataframe(locations_root=configs["locations_dir"])
-        save_locations_dataframe(dataframe, output_csv_path=configs["locations_index_csv"])
+        save_locations_dataframe(dataframe, output_csv_path=configs["locations_index_csv"], question=configs["ranking_question"])
 
     elif mode == "pairing": 
             create_location_pairs(configs)

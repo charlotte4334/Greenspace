@@ -87,7 +87,8 @@ def random_sampling(map, transform, raster_crs,map_data,n):
             sampled_points = []
             max_attempts = max(n * 100, 1000)
             attempts = 0
-
+            
+            
             while len(sampled_points) < n and attempts < max_attempts:
                 batch_size = min((n - len(sampled_points)) * 4, 5000)
                 xs = np.random.uniform(minx, maxx, batch_size)
@@ -101,6 +102,8 @@ def random_sampling(map, transform, raster_crs,map_data,n):
                             break
 
                 attempts += batch_size
+            
+            
 
             if len(sampled_points) < n:
                 raise ValueError(

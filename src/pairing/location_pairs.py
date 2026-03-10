@@ -90,7 +90,7 @@ def random_sparse_graph(dataframe, k, min_distance):
 
     pair_rows = []
     for p1, p2 in pairs:
-        pair_rows.append([p1, id_map[p1]["lat"], id_map[p1]["lon"],
-                         p2, id_map[p2]["lat"], id_map[p2]["lon"]])
+        pair_rows.append([id_map[p1]["location_id"],
+                         id_map[p2]["location_id"]])
 
-    return pd.DataFrame(pair_rows, columns=["pano_id1", "lat1", "lon1", "pano_id2", "lat2", "lon2"])
+    return pd.DataFrame(pair_rows, columns=["Loc_1", "Loc_2"])

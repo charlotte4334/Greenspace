@@ -54,7 +54,9 @@ def build_locations_dataframe(locations_root):
 
 
 
-def save_locations_dataframe(dataframe, output_csv_path):
+def save_locations_dataframe(dataframe, output_csv_path, question):
     output_path = Path(output_csv_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
+	# add question to dataframe
+	dataframe["question"] = question
     dataframe.to_csv(output_path, index=False)
